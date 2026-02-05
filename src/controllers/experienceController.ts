@@ -152,3 +152,69 @@ export const blockExperience = async (
     next(err);
   }
 };
+
+export const listExperiences = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { location, start_date, end_date, page, limit, sort } = req.query as Record<
+      string,
+      string | undefined
+    >;
+
+    const pageNumber = page ? Number(page) : 1;
+    const limitNumber = limit ? Number(limit) : 10;
+    const sanitizedPage = Number.isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber;
+    const sanitizedLimit = Number.isNaN(limitNumber) || limitNumber < 1 ? 10 : limitNumber;
+
+    const sortValue = sort === "-start_time" ? "DESC" : "ASC";
+
+    const filters: string[] = ["status = 'published'"];
+    const params: Array<string | number> = [];
+
+    if (location) {
+      params.push(`%${location}%`);
+      filters.push(`location ILIKE $${params.length}`);
+    }
+
+    if (start_date) {
+      params.push(start_date);
+      filters.push(`start_time >= $${params.length}`);
+    }
+
+    if (end_date) {
+      params.push(end_date);
+      filters.push(`start_time <= $${params.length}`);
+    }
+
+    const whereClause = filters.length > 0 ? `WHERE ${filters.join(" AND ")}` : "";
+
+    const countResult = await query<{ count: string }>(
+      `SELECT COUNT(*)::text as count FROM experiences ${whereClause}`,
+      params
+    );
+    const total = Number(countResult.rows[0]?.count ?? 0);
+
+    params.push(sanitizedLimit);
+    params.push((sanitizedPage - 1) * sanitizedLimit);
+
+    const listResult = await query<Experience>(
+      `SELECT * FROM experiences ${whereClause} ORDER BY start_time ${sortValue} LIMIT $${
+        params.length - 1
+      } OFFSET $${params.length}`,
+      params
+    );
+
+    res.json({
+      success: true,
+      data: {
+        experiences: listResult.rows,
+        pagination: { page: sanitizedPage, limit: sanitizedLimit, total },
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
