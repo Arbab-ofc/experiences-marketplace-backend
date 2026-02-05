@@ -22,6 +22,7 @@
 - [Environment Variables](#environment-variables)
 - [Database Schema](#database-schema)
 - [API Documentation](#api-documentation)
+- [cURL Examples](#curl-examples)
 - [RBAC Rules](#rbac-rules)
 - [Error Handling](#error-handling)
 - [Testing](#testing)
@@ -547,6 +548,56 @@ Error Response (403):
 
 cURL:
 ```bash
+curl http://localhost:3000/test/admin-only \
+  -H "Authorization: Bearer <admin_token>"
+```
+
+## cURL Examples
+Full set of endpoint cURL commands (copy-paste ready):
+```bash
+# Health
+curl http://localhost:3000/health
+
+# Signup
+curl -X POST http://localhost:3000/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"SecurePass123!","role":"user"}'
+
+# Login
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"SecurePass123!"}'
+
+# Auth me
+curl http://localhost:3000/auth/me \
+  -H "Authorization: Bearer <token>"
+
+# Create experience (host)
+curl -X POST http://localhost:3000/experiences \
+  -H "Authorization: Bearer <host_token>" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Cooking Class","description":"Learn Italian cooking","location":"Rome","price":50,"start_time":"2026-03-01T10:00:00Z","end_time":"2026-03-01T13:00:00Z"}'
+
+# Publish experience
+curl -X PATCH http://localhost:3000/experiences/1/publish \
+  -H "Authorization: Bearer <host_token>"
+
+# Block experience (admin)
+curl -X PATCH http://localhost:3000/experiences/1/block \
+  -H "Authorization: Bearer <admin_token>"
+
+# List experiences (public)
+curl "http://localhost:3000/experiences?location=Rome&start_date=2026-03-01&end_date=2026-03-31&page=1&limit=10&sort=-start_time"
+
+# Book experience (user)
+curl -X POST http://localhost:3000/experiences/1/book \
+  -H "Authorization: Bearer <user_token>"
+
+# User bookings
+curl http://localhost:3000/bookings \
+  -H "Authorization: Bearer <user_token>"
+
+# Admin-only test route
 curl http://localhost:3000/test/admin-only \
   -H "Authorization: Bearer <admin_token>"
 ```
