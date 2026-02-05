@@ -3,12 +3,12 @@ import { query } from "../db";
 import type { Experience, UserRole } from "../types";
 
 type ExperienceInput = {
-  title?: string;
+  title: string;
   description?: string;
-  location?: string;
-  price?: number;
-  start_time?: string;
-  end_time?: string;
+  location: string;
+  price: number;
+  start_time: string;
+  end_time: string;
 };
 
 const isHost = (role?: UserRole): boolean => role === "host";

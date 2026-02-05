@@ -32,8 +32,6 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
 
 export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { email, password } = req.body as { email?: string; password?: string };
-
     const { email, password } = req.body as { email: string; password: string };
 
     const result = await query<User>(
