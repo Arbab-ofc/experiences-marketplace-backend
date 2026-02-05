@@ -13,14 +13,6 @@ type ExperienceInput = {
 
 const isHost = (role?: UserRole): boolean => role === "host";
 
-const parseDate = (value?: string): Date | null => {
-  if (!value) {
-    return null;
-  }
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date;
-};
-
 export const createExperience = async (
   req: Request,
   res: Response,
@@ -34,29 +26,13 @@ export const createExperience = async (
 
     const { title, description, location, price, start_time, end_time } = req.body as ExperienceInput;
 
-    if (!title || !location || price === undefined || !start_time || !end_time) {
+    const startDate = new Date(start_time as string);
+    const endDate = new Date(end_time as string);
+
+    if (endDate <= startDate) {
       res.status(400).json({
         success: false,
-        error: { message: "Missing required fields", status: 400 },
-      });
-      return;
-    }
-
-    const startDate = parseDate(start_time);
-    const endDate = parseDate(end_time);
-
-    if (!startDate || !endDate || endDate <= startDate) {
-      res.status(400).json({
-        success: false,
-        error: { message: "Invalid start or end time", status: 400 },
-      });
-      return;
-    }
-
-    if (typeof price !== "number" || price < 0) {
-      res.status(400).json({
-        success: false,
-        error: { message: "Invalid price", status: 400 },
+        error: { message: "end_time must be after start_time", status: 400 },
       });
       return;
     }

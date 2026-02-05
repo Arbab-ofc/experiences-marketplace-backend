@@ -1,40 +1,15 @@
 import { type NextFunction, type Request, type Response } from "express";
 import { query } from "../db";
 import { hashPassword, verifyPassword, generateToken } from "../utils/auth";
-import type { User, UserRole } from "../types";
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-const isAllowedRole = (role: string): role is UserRole => {
-  return role === "user" || role === "host";
-};
+import type { User } from "../types";
 
 export const signup = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { email, password, role } = req.body as {
-      email?: string;
-      password?: string;
-      role?: string;
+      email: string;
+      password: string;
+      role: string;
     };
-
-    if (!email || !emailRegex.test(email)) {
-      res.status(400).json({ success: false, error: { message: "Invalid email", status: 400 } });
-      return;
-    }
-
-    if (!password || !passwordRegex.test(password)) {
-      res.status(400).json({
-        success: false,
-        error: { message: "Password must be at least 8 chars, 1 uppercase, 1 number", status: 400 },
-      });
-      return;
-    }
-
-    if (!role || !isAllowedRole(role)) {
-      res.status(400).json({ success: false, error: { message: "Invalid role", status: 400 } });
-      return;
-    }
 
     const existing = await query<{ id: number }>("SELECT id FROM users WHERE email = $1", [email]);
     if (existing.rowCount && existing.rowCount > 0) {
@@ -59,10 +34,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   try {
     const { email, password } = req.body as { email?: string; password?: string };
 
-    if (!email || !password) {
-      res.status(400).json({ success: false, error: { message: "Email and password required", status: 400 } });
-      return;
-    }
+    const { email, password } = req.body as { email: string; password: string };
 
     const result = await query<User>(
       "SELECT id, email, role, password_hash FROM users WHERE email = $1",
