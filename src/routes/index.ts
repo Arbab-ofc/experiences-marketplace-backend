@@ -3,6 +3,7 @@ import { checkConnection } from "../db";
 import authRoutes from "./authRoutes";
 import testRoutes from "./testRoutes";
 import experienceRoutes from "./experienceRoutes";
+import bookingRoutes from "./bookingRoutes";
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.get("/health", async (_req: Request, res: Response) => {
 
 router.use("/auth", authRoutes);
 router.use("/experiences", experienceRoutes);
+router.use("/", bookingRoutes);
 router.use("/test", testRoutes);
 
 export default router;

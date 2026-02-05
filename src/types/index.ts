@@ -23,6 +23,17 @@ export interface Experience {
   updated_at: Date;
 }
 
+export type BookingStatus = "confirmed" | "cancelled";
+
+export interface Booking {
+  id: number;
+  user_id: number;
+  experience_id: number;
+  booking_date: Date;
+  status: BookingStatus;
+  created_at: Date;
+}
+
 export interface JWTPayload {
   userId: number;
   role: UserRole;
