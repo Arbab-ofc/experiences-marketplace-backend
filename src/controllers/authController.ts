@@ -91,3 +91,12 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
     next(err);
   }
 };
+
+export const me = async (req: Request, res: Response): Promise<void> => {
+  if (!req.user) {
+    res.status(401).json({ success: false, error: { message: "Unauthorized", status: 401 } });
+    return;
+  }
+
+  res.json({ success: true, data: { id: req.user.id, email: req.user.email, role: req.user.role } });
+};
