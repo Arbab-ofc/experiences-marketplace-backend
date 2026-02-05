@@ -1,4 +1,4 @@
-import { Pool, type QueryResult } from "pg";
+import { Pool, type QueryResult, type QueryResultRow } from "pg";
 import { config } from "../config/env";
 
 const pool = new Pool({
@@ -8,7 +8,10 @@ const pool = new Pool({
 type QueryParam = string | number | boolean | null | Date;
 type QueryParams = QueryParam[];
 
-const query = <T>(text: string, params?: QueryParams): Promise<QueryResult<T>> => {
+const query = <T extends QueryResultRow = QueryResultRow>(
+  text: string,
+  params?: QueryParams
+): Promise<QueryResult<T>> => {
   return pool.query<T>(text, params);
 };
 
