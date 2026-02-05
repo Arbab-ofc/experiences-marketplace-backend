@@ -2,9 +2,15 @@
 
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-unknown-lightgrey)
-![License](https://img.shields.io/badge/license-ISC-blue)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-green)
 ![TypeScript](https://img.shields.io/badge/typescript-5.x-blue)
+![Express](https://img.shields.io/badge/express-4.x-black)
+![PostgreSQL](https://img.shields.io/badge/postgresql-15.x-blue)
+![PG](https://img.shields.io/badge/pg-8.x-blue)
+![JWT](https://img.shields.io/badge/jwt-9.x-blue)
+![bcrypt](https://img.shields.io/badge/bcrypt-5.x-orange)
+![express-validator](https://img.shields.io/badge/express--validator-7.x-brightgreen)
+![dotenv](https://img.shields.io/badge/dotenv-16.x-yellowgreen)
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -12,6 +18,7 @@
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+- [Seeding](#seeding)
 - [Environment Variables](#environment-variables)
 - [Database Schema](#database-schema)
 - [API Documentation](#api-documentation)
@@ -22,7 +29,7 @@
 - [Health Check](#health-check)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
-- [License](#license)
+- [Contact](#contact)
 
 ## Project Overview
 This REST API powers an Experiences Marketplace with secure authentication, host-managed experiences, public browsing, bookings, and admin moderation.
@@ -71,7 +78,11 @@ Design decisions:
 - PostgreSQL 13+
 
 ## Installation
-1. Clone the repo
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/Arbab-ofc/experiences-marketplace-backend.git
+   cd experiences-marketplace-backend
+   ```
 2. Install dependencies:
    ```bash
    npm install
@@ -89,6 +100,16 @@ Design decisions:
    ```bash
    npm run dev
    ```
+
+## Seeding
+Populate the database with sample users and experiences:
+```bash
+npm run seed
+```
+Seeded accounts (password: `Test1234`):
+- admin@test.com (admin)
+- host@test.com (host)
+- user@test.com (user)
 
 ## Environment Variables
 Create a `.env` file:
@@ -416,6 +437,17 @@ Success Response (200):
 }
 ```
 
+Error Response (400):
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Validation failed",
+    "status": 400
+  }
+}
+```
+
 cURL:
 ```bash
 curl "http://localhost:3000/experiences?location=Rome&sort=-start_time"
@@ -471,6 +503,17 @@ Success Response (200):
 }
 ```
 
+Error Response (401):
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Unauthorized",
+    "status": 401
+  }
+}
+```
+
 cURL:
 ```bash
 curl http://localhost:3000/bookings \
@@ -488,6 +531,17 @@ Success Response (200):
 {
   "success": true,
   "data": { "message": "admin access granted" }
+}
+```
+
+Error Response (403):
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Forbidden",
+    "status": 403
+  }
 }
 ```
 
@@ -561,5 +615,7 @@ Monitors:
 - Commit messages follow Conventional Commits
 - One step per commit per roadmap
 
-## License
-ISC
+## Contact
+- GitHub: https://github.com/Arbab-ofc
+- Website: https://www.arbabofc.me
+- Email: mailto:arbabprvt@gmail.com
